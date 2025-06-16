@@ -1,0 +1,310 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Main app container */
+.app {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Header styles */
+.header {
+  background-color: #ff6b35;
+  color: white;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+/* Course selection section */
+.course-selection {
+  margin-bottom: 32px;
+}
+
+.course-select {
+  width: 256px;
+}
+
+/* Filter section */
+.filter-section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #374151;
+  margin-bottom: 32px;
+  font-weight: normal;
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.label {
+  display: block;
+  color: #374151;
+  font-size: 1.125rem;
+  margin-bottom: 8px;
+  font-weight: normal;
+}
+
+.text-input,
+.select-dropdown {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.text-input:focus,
+.select-dropdown:focus {
+  outline: none;
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+}
+
+.text-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Submit section */
+.submit-section {
+  margin-bottom: 32px;
+}
+
+.submit-btn {
+  background-color: #ff6b35;
+  color: white;
+  font-weight: bold;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #e55a2b;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  gap: 16px;
+}
+
+.pagination-btn {
+  background-color: #60a5fa;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pagination-btn:hover {
+  background-color: #3b82f6;
+}
+
+.page-info {
+  color: #374151;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .container {
+    padding: 16px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .course-select {
+    width: 100%;
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+  }
+  
+  .filter-section {
+    padding: 16px;
+  }
+}
+
+
+.education-level-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap; /* For responsiveness on small screens */
+}
+
+.education-level-group .label {
+  font-size: 1.125rem;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.education-level-options {
+  display: flex;
+  gap: 24px;
+}
+
+.education-level-options label {
+  font-size: 1rem;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.specialization-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.specialization-group .label {
+  margin-bottom: 5px;
+  
+  color: #333;
+}
+
+.specialization-group .select-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+.search-bar {
+  padding: 10px 0;
+   margin-bottom: 20px;
+}
+
+/* Search Bar - Modern Pill Style */
+.search-bar input {
+  width: 100%;
+  padding: 10px 18px;
+  border-radius: 50px; /* pill shape */
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar input:focus {
+  border-color: #ff6b35;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+}
+
+/* Updated Dropdown Style */
+.select-dropdown {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px; /* modern smooth shape */
+  background-color: #ffffff;
+  font-size: 1rem;
+  appearance: none; /* remove native arrow for custom styling if needed */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.select-dropdown:focus {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+  outline: none;
+}
+
+
+.colleges-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  margin-top: 20px;
+}
+
+.colleges-table th,
+.colleges-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.colleges-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.colleges-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.colleges-table tr:hover {
+  background-color: #f0f0f0;
+}
