@@ -19,11 +19,12 @@ require('dotenv').config();
 
     for (let row of rows) {
       await pool.execute(insertQuery, [
-        row["Code"] || null,
-        row["College Name"] || null,
-        row["CityName"] || null,
-        row["Course"] || null,
-      ]);
+  row["Code"] || null,
+  row["College Name"] || null,
+  (row["City Name"] || "").trim() || null,
+  row["Course"] || null,
+]);
+
     }
 
     console.log('Bcom course data imported successfully!');
