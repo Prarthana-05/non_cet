@@ -129,6 +129,43 @@ router.get('/colleges', async (req, res) => {
 });
 
 
+// Route to search colleges by name and return all courses they offer
+router.get('/search-college', async (req, res) => {
+  const search = req.query.q;
+
+  if (!search || search.trim() === '') {
+    return res.status(400).json({ success: false, message: 'Please enter a college name to search' });
+  }
+
+  const searchTerm = `%${search.trim().toLowerCase()}%`;
+  const results = [];
+
+  try {
+    for (const [stream, table] of Object.entries(streamToTableMap)) {
+      // Skip PG table if you don't want to search in it
+      if (table === 'pg_cutoffs') continue;
+
+      const [rows] = await pool.query(
+        `SELECT DISTINCT institute_name, course, college_code, city FROM ${table} WHERE LOWER(TRIM(institute_name)) LIKE ?`,
+        [searchTerm]
+      );
+
+      if (rows.length > 0) {
+        results.push(...rows);
+      }
+    }
+
+    if (results.length === 0) {
+      return res.json({ success: true, data: [], message: 'No matching colleges found' });
+    }
+
+    res.json({ success: true, data: results });
+  } catch (error) {
+    console.error('Error searching college:', error);
+    res.status(500).json({ success: false, message: 'Error searching college', error: error.message });
+  }
+});
+
 // Add this temporary debug route
 
 
