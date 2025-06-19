@@ -130,6 +130,21 @@ function App() {
       setColleges([]);
       console.log('Selected Specialization:', value);
     }
+    else if (name === 'searchQuery') {
+  setFormData(prev => ({
+    ...prev,
+    [name]: value
+  }));
+
+  // Trigger college search by name
+  if (value.trim() !== '') {
+    fetchCollegeBySearch(value.trim());
+  } else {
+    setColleges([]);
+    setShowResults(false);
+  }
+}
+
     else {
       setFormData(prev => ({
         ...prev,
@@ -137,6 +152,23 @@ function App() {
       }));
     }
   };
+
+
+
+  const fetchCollegeBySearch = async (query) => {
+  try {
+    const res = await axios.get(`http://localhost:5000/api/students/search-college?q=${query}`);
+    setColleges(res.data.data);
+    setShowResults(true);
+    setCurrentPage(1);
+    console.log('Colleges fetched by search:', res.data.data);
+  } catch (error) {
+    console.error('Error searching colleges:', error);
+    setColleges([]);
+    setShowResults(false);
+  }
+};
+
 
   const handleSubmit = async () => {
     // Modified validation - city only required for Undergraduate
