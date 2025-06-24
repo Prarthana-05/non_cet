@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
-import logo from './logo.png';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -116,7 +115,7 @@ const [authSuccess, setAuthSuccess] = useState('');
 
         try {
           let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}`;
-          
+         
           // Only add city parameter for Undergraduate
           if (formData.educationLevel === 'Undergraduate' && formData.city) {
             url += `&city=${formData.city}`;
@@ -139,7 +138,7 @@ const [authSuccess, setAuthSuccess] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+   
     if (name === 'educationLevel') {
       setFormData(prev => ({
         ...prev,
@@ -212,7 +211,7 @@ const [authSuccess, setAuthSuccess] = useState('');
   const handleSubmit = async () => {
     // Modified validation - city only required for Undergraduate
     const isCityRequired = formData.educationLevel === 'Undergraduate';
-    
+   
     if (!formData.educationLevel || !formData.courseName || !formData.specialization || !formData.studentName) {
       alert('Please fill all required fields');
       return;
@@ -225,7 +224,7 @@ const [authSuccess, setAuthSuccess] = useState('');
 
     try {
       let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}`;
-      
+     
       // Only add city parameter for Undergraduate
       if (formData.educationLevel === 'Undergraduate' && formData.city) {
         url += `&city=${formData.city}`;
@@ -308,17 +307,9 @@ const handleAuthSubmit = async () => {
 
   return loggedIn ?(
     <div className="app">
-      {/* Watermark */}
-      <div className="watermark"></div>
       {/* Header */}
       <div className="header">
-        <div className="header-left">
-          <img src={logo} alt="Logo" className="header-logo" />
-        </div>
-        <div className="header-right">
-          <h1>VidyarthiMitra Non-Cet College</h1>
-          <div className="header-subtitle">Empowering Your College Search</div>
-        </div>
+        <h1>VidyarthiMitra Non-Cet College</h1>
       </div>
 
       <div className="container">
@@ -363,7 +354,7 @@ const handleAuthSubmit = async () => {
           <label className="label">
             Select Stream:
           </label>
-          <select 
+          <select
             name="courseName"
             value={formData.courseName}
             onChange={handleInputChange}
@@ -414,7 +405,7 @@ const handleAuthSubmit = async () => {
         {/* Filter Colleges Section */}
         <div className="filter-section">
           <h2 className="section-title">Filter Colleges</h2>
-          
+         
           {/* Student Name */}
           <div className="form-group">
             <label className="label">
@@ -457,7 +448,7 @@ const handleAuthSubmit = async () => {
         </div>
 
         {/* Submit Button */}
-        <div className="submit-section" style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className="submit-section">
           <button
             onClick={handleSubmit}
             className="submit-btn"
@@ -498,16 +489,16 @@ const handleAuthSubmit = async () => {
         {/* Pagination */}
         {showResults && colleges.length > 0 && (
           <div className="pagination">
-            <button 
-              className="pagination-btn" 
+            <button
+              className="pagination-btn"
               onClick={handlePrevPage}
               disabled={currentPage === 1}
             >
               Previous
             </button>
             <span className="page-info">Page {currentPage} of {totalPages}</span>
-            <button 
-              className="pagination-btn" 
+            <button
+              className="pagination-btn"
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
@@ -518,7 +509,7 @@ const handleAuthSubmit = async () => {
 
 
 
-        
+       
 
 
         {/* Chatbot Button and Box */}
@@ -554,46 +545,8 @@ const handleAuthSubmit = async () => {
   </div>
 )}
 
-      </div> 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-top-bar"></div>
-        <div className="footer-content">
-          <div className="footer-section social">
-            <div className="footer-title">Connect with us</div>
-            <div className="footer-icons">
-              <a href="https://www.linkedin.com/company/vidyarthimitra" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.025-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.968v5.699h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.841-1.563 3.039 0 3.6 2.001 3.6 4.601v5.595z"/></svg>
-              </a>
-              <a href="https://twitter.com/vidyarthimitra" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557a9.93 9.93 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724c-.951.564-2.005.974-3.127 1.195a4.92 4.92 0 0 0-8.384 4.482c-4.086-.205-7.713-2.164-10.141-5.144a4.822 4.822 0 0 0-.664 2.475c0 1.708.87 3.216 2.188 4.099a4.904 4.904 0 0 1-2.229-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.936 4.936 0 0 1-2.224.084c.627 1.956 2.444 3.377 4.6 3.417a9.867 9.867 0 0 1-6.102 2.104c-.396 0-.787-.023-1.175-.069a13.945 13.945 0 0 0 7.548 2.212c9.057 0 14.009-7.513 14.009-14.009 0-.213-.005-.425-.014-.636a10.012 10.012 0 0 0 2.457-2.548z"/></svg>
-              </a>
-              <a href="https://www.instagram.com/vidyarthimitra" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.241 1.308 3.608.058 1.266.069 1.646.069 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.241 1.246-3.608 1.308-1.266.058-1.646.069-4.85.069s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.241-1.308-3.608-.058-1.266-.069-1.646-.069-4.85s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.241-1.246 3.608-1.308 1.266-.058 1.646-.069 4.85-.069zm0-2.163c-3.259 0-3.667.012-4.947.07-1.276.058-2.687.334-3.678 1.325-.991.991-1.267 2.402-1.325 3.678-.058 1.28-.07 1.688-.07 4.947s.012 3.667.07 4.947c.058 1.276.334 2.687 1.325 3.678.991.991 2.402 1.267 3.678 1.325 1.28.058 1.688.07 4.947.07s3.667-.012 4.947-.07c1.276-.058 2.687-.334 3.678-1.325.991-.991 1.267-2.402 1.325-3.678.058-1.28.07-1.688.07-4.947s-.012-3.667-.07-4.947c-.058-1.276-.334-2.687-1.325-3.678-.991-.991-2.402-1.267-3.678-1.325-1.28-.058-1.688-.07-4.947-.07zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-              </a>
-              <a href="https://www.vidyarthimitra.org" target="_blank" rel="noopener noreferrer" aria-label="Website">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10C22 6.477 17.523 2 12 2zm0 2c1.657 0 3.156.672 4.242 1.758A5.978 5.978 0 0 1 19.197 8H16.5a.5.5 0 0 0 0 1h2.697c.13.646.203 1.32.203 2 0 .68-.073 1.354-.203 2H16.5a.5.5 0 0 0 0 1h2.697a5.978 5.978 0 0 1-2.955 2.242A7.963 7.963 0 0 1 12 20a7.963 7.963 0 0 1-4.242-1.758A5.978 5.978 0 0 1 4.803 16H7.5a.5.5 0 0 0 0-1H4.803A7.963 7.963 0 0 1 4 12c0-.68.073-1.354.203-2H7.5a.5.5 0 0 0 0-1H4.803a5.978 5.978 0 0 1 2.955-2.242A7.963 7.963 0 0 1 12 4zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 12 6z"/></svg>
-              </a>
-            </div>
-          </div>
-          <div className="footer-section website">
-            <div className="footer-title">Official Website</div>
-            <a href="https://www.vidyarthimitra.org" className="footer-link" target="_blank" rel="noopener noreferrer">www.vidyarthimitra.org</a>
-          </div>
-          <div className="footer-section contact">
-            <div className="footer-title">CONTACT <span className="footer-highlight">US</span></div>
-            <hr className="footer-divider" />
-            <div className="footer-contact-item"><i className="fas fa-phone"></i> +91 77200 25900</div>
-            <div className="footer-contact-item"><i className="fas fa-phone"></i> +91 77200 81400</div>
-            <div className="footer-contact-item"><i className="fas fa-envelope"></i> contact@vidyarthimitra.org</div>
-            <div className="footer-contact-item"><i className="fas fa-envelope"></i> info@vidyarthimitra.org</div>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          © 2025 VidyarthiMitra. All rights reserved.
-        </div>
-      </footer>
-    </div> 
+      </div>
+    </div>
 ) : (
   <div className="login-container">
     <h2>{authMode === 'login' ? 'Login' : 'Register'}</h2>

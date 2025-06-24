@@ -120,31 +120,6 @@ body {
   z-index: 1;
   letter-spacing: -0.025em;
   margin: 0;
-  letter-spacing: 0.5px;
-  color: #1e293b;
-  text-shadow: none;
-}
-
-.header-subtitle {
-  font-size: 1.2rem;
-  color: #2563eb;
-  margin-top: 8px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-}
-
-/* Watermark styles */
-.watermark {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 0;
-  background: url('./logo.png') no-repeat center center;
-  opacity: 0.4;
-  background-size: 70vw auto;
 }
 
 .header .subtitle {
@@ -704,9 +679,9 @@ body {
     right: var(--space-4);
     width: calc(100vw - 32px);
   }
-  .header-logo {
-    width: 90px;
-  }
+}
+
+@media (max-width: 480px) {
   .header h1 {
     font-size: 1.75rem;
   }
@@ -793,4 +768,3 @@ body {
   font-weight: bold;
   font-size: 16px;
 }
-
