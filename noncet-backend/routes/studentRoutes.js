@@ -22,22 +22,29 @@ router.get('/check-db', async (req, res) => {
   }
 });
 
-// Stream-to-table mapping
-const streamToTableMap = {
-  'Fine Arts': 'bfa_cutoffs',
-  'Commerce': 'bcom_cutoffs',
-  'Science': 'bsc_cutoffs',
-  'Arts': 'ba_cutoffs',
-  'Vocational': 'bvoc_cutoffs',
-  'International Accounting': 'bia_cutoffs',
-  'Management': 'bm_cutoffs',
-  'Performing Arts': 'bpa_cutoffs',
-  'Sports Management': 'bsports_cutoffs',
-  // Postgraduate mappings
-  'Master of Science': 'pg_cutoffs',
-  'Master of Arts': 'pg_cutoffs',
-  'Master of Commerce': 'pg_cutoffs',
-  'MA Psychology': 'pg_cutoffs'
+const universityToTableMap = {
+  'Mumbai University': {
+    'Fine Arts': 'bfa_cutoffs',
+    'Commerce': 'bcom_cutoffs',
+    'Science': 'bsc_cutoffs',
+    'Arts': 'ba_cutoffs',
+    'Vocational': 'bvoc_cutoffs',
+    'International Accounting': 'bia_cutoffs',
+    'Management': 'bm_cutoffs',
+    'Performing Arts': 'bpa_cutoffs',
+    'Sports Management': 'bsports_cutoffs',
+    'Integrated Master of Science': 'integrated_msc_cutoffs',
+    // PG streams
+    'Master of Science': 'pg_cutoffs',
+    'Master of Arts': 'pg_cutoffs',
+    'Master of Commerce': 'pg_cutoffs',
+    'MA Psychology': 'pg_cutoffs'
+  },
+
+  'Pune University': {
+    'Science': 'pune_bsc_cutoffs',
+    
+  }
 };
 
 // Check if stream is postgraduate
@@ -45,23 +52,31 @@ const isPostgraduate = (stream) => {
   return ['Master of Science', 'Master of Arts', 'Master of Commerce', 'MA Psychology'].includes(stream);
 };
 
-router.get('/specializations', async (req, res) => {
-  const { stream } = req.query;
 
-  const tableName = streamToTableMap[stream];
+router.get('/specializations', async (req, res) => {
+  const { stream, university } = req.query;
+
+  if (!stream || !university) {
+    return res.status(400).json({ success: false, message: 'Missing stream or university parameter' });
+  }
+
+  const universityMap = universityToTableMap[university];
+  if (!universityMap) {
+    return res.status(400).json({ success: false, message: 'Invalid university' });
+  }
+
+  const tableName = universityMap[stream];
   if (!tableName) {
-    return res.status(400).json({ success: false, message: 'Invalid stream selected' });
+    return res.status(400).json({ success: false, message: 'Invalid stream for the selected university' });
   }
 
   try {
     let query;
-    if (tableName === 'pg_cutoffs') {
-      // For postgraduate, filter courses that start with the selected stream
+    if (tableName.includes('pg')) {
       query = `SELECT DISTINCT course FROM ${tableName} WHERE course LIKE ?`;
       const [rows] = await pool.query(query, [`${stream}%`]);
       res.json({ success: true, data: rows });
     } else {
-      // For undergraduate, use existing logic
       query = `SELECT DISTINCT course FROM ${tableName}`;
       const [rows] = await pool.query(query);
       res.json({ success: true, data: rows });
@@ -71,57 +86,87 @@ router.get('/specializations', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching specializations', error: error.message });
   }
 });
-// Route to get cities - only for undergraduate streams
+
+
+// Route to get cleaned, unique cities (only for UG streams)
 router.get('/cities', async (req, res) => {
-  const { stream } = req.query;
-  
-  // Check if this is a postgraduate stream
-  if (isPostgraduate(stream)) {
-    return res.json({ success: true, data: [] }); // Return empty array for postgraduate
+  const { stream, university } = req.query;
+
+  // Validate university
+  if (!universityToTableMap[university]) {
+    return res.status(400).json({ success: false, message: 'Invalid university selected' });
   }
-  
-  const tableName = streamToTableMap[stream];
+
+  // PG streams don’t need cities
+  if (isPostgraduate(stream)) {
+    return res.json({ success: true, data: [] });
+  }
+
+  const tableName = universityToTableMap[university][stream];
   if (!tableName) {
-    return res.status(400).json({ success: false, message: 'Invalid stream selected' });
+    return res.status(400).json({ success: false, message: 'Invalid stream for selected university' });
   }
 
   try {
-    const [rows] = await pool.query(`SELECT DISTINCT city FROM ${tableName} ORDER BY city`);
-    res.json({ success: true, data: rows });
+    const [rows] = await pool.query(`
+      SELECT DISTINCT TRIM(LOWER(city)) AS city_cleaned
+      FROM ${tableName}
+      WHERE city IS NOT NULL AND TRIM(city) != ''
+    `);
+
+    const uniqueCitiesSet = new Set();
+    rows.forEach(row => {
+      const c = row.city_cleaned;
+      const formatted = c.charAt(0).toUpperCase() + c.slice(1);
+      uniqueCitiesSet.add(formatted);
+    });
+
+    const cleanedCities = Array.from(uniqueCitiesSet).sort();
+
+    res.json({ success: true, data: cleanedCities });
   } catch (error) {
+    console.error('Error fetching cities:', error);
     res.status(500).json({ success: false, message: 'Error fetching cities', error: error.message });
   }
 });
 
+
 // Route to get colleges - with conditional city filtering
 router.get('/colleges', async (req, res) => {
-  const { stream, specialization, city } = req.query;
-  const tableName = streamToTableMap[stream];
+  const { stream, specialization, city, university } = req.query;
+
+  // Validate university
+  if (!universityToTableMap[university]) {
+    return res.status(400).json({ success: false, message: 'Invalid university selected' });
+  }
+
+  const tableName = universityToTableMap[university][stream];
 
   if (!tableName) {
-    return res.status(400).json({ success: false, message: 'Invalid stream selected' });
+    return res.status(400).json({ success: false, message: 'Invalid stream selected for this university' });
   }
 
   try {
-    let query, params, rows;
-    
+    let query, params = [], rows;
+
     if (isPostgraduate(stream)) {
-      query = `SELECT institute_name, course FROM ${tableName} WHERE TRIM(LOWER(course)) = TRIM(LOWER(?))`;
-      params = [specialization];
+      query = `SELECT '${university}' AS university, institute_name, course FROM ${tableName} WHERE TRIM(LOWER(course)) = TRIM(LOWER(?))`;
+      params.push(specialization);
     } else {
-      query = `SELECT college_code, institute_name, city, course FROM ${tableName} WHERE course = ?`;
-      params = [specialization];
-      if (city && city !== 'All' && city !== '') {
-        query += ` AND city = ?`;
+      query = `SELECT '${university}' AS university, college_code, institute_name, city, course FROM ${tableName} WHERE course = ?`;
+      params.push(specialization);
+
+      if (city && city !== 'All' && city.trim() !== '') {
+        query += ` AND TRIM(LOWER(city)) = TRIM(LOWER(?))`;
         params.push(city);
       }
     }
 
     console.log('Executing query:', query);
     console.log('With params:', params);
-    
+
     [rows] = await pool.query(query, params);
-    res.json({ success: true, data: rows, type: isPostgraduate(stream) ? 'PG' : 'UG' }); // ⬅️ add type in response
+    res.json({ success: true, data: rows, type: isPostgraduate(stream) ? 'PG' : 'UG' });
   } catch (error) {
     console.error('Database error:', error);
     res.status(500).json({ success: false, message: 'Error fetching colleges', error: error.message });
@@ -129,7 +174,7 @@ router.get('/colleges', async (req, res) => {
 });
 
 
-// Route to search colleges by name and return all courses they offer
+
 router.get('/search-college', async (req, res) => {
   const search = req.query.q;
 
@@ -141,22 +186,24 @@ router.get('/search-college', async (req, res) => {
   const results = [];
 
   try {
-    for (const [stream, table] of Object.entries(streamToTableMap)) {
-      // Skip PG table if you don't want to search in it
-      if (table === 'pg_cutoffs') continue;
+    for (const [university, streamTableMap] of Object.entries(universityToTableMap)) {
+      for (const [stream, table] of Object.entries(streamTableMap)) {
+        let query = '';
+        let params = [searchTerm];
 
-      const [rows] = await pool.query(
-        `SELECT DISTINCT institute_name, course, college_code, city FROM ${table} WHERE LOWER(TRIM(institute_name)) LIKE ?`,
-        [searchTerm]
-      );
+        // PG tables may not have college_code or city
+        if (isPostgraduate(stream)) {
+          query = `SELECT DISTINCT '${university}' AS university, institute_name, course, NULL AS college_code, NULL AS city FROM ${table} WHERE LOWER(TRIM(institute_name)) LIKE ?`;
+        } else {
+          query = `SELECT DISTINCT '${university}' AS university, institute_name, course, college_code, city FROM ${table} WHERE LOWER(TRIM(institute_name)) LIKE ?`;
+        }
 
-      if (rows.length > 0) {
-        results.push(...rows);
+        const [rows] = await pool.query(query, params);
+
+        if (rows.length > 0) {
+          results.push(...rows);
+        }
       }
-    }
-
-    if (results.length === 0) {
-      return res.json({ success: true, data: [], message: 'No matching colleges found' });
     }
 
     res.json({ success: true, data: results });
@@ -165,6 +212,7 @@ router.get('/search-college', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error searching college', error: error.message });
   }
 });
+
 
 // Add this temporary debug route
 router.post('/chatbot', (req, res) => {

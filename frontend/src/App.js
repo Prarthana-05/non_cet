@@ -9,7 +9,8 @@ function App() {
     city: '',
     searchQuery: '',
     educationLevel: '',
-    specialization: ''
+    specialization: '',
+    university: ''
   });
 
 
@@ -59,7 +60,8 @@ const [authSuccess, setAuthSuccess] = useState('');
     const fetchSpecializations = async () => {
       if (formData.courseName) {
         try {
-          const res = await axios.get(`http://localhost:5000/api/students/specializations?stream=${formData.courseName}`);
+          const res = await axios.get(`http://localhost:5000/api/students/specializations?stream=${formData.courseName}&university=${formData.university}`);
+
           setSpecializations(res.data.data.map(item => item.course));
           console.log('Selected Stream:', formData.courseName);
           console.log('Fetched specializations:', res.data.data);
@@ -73,7 +75,7 @@ const [authSuccess, setAuthSuccess] = useState('');
     };
 
     fetchSpecializations();
-  }, [formData.courseName]);
+  },[formData.courseName, formData.university]);
 
   useEffect(() => {
     if (formData.specialization) {
@@ -85,10 +87,13 @@ const [authSuccess, setAuthSuccess] = useState('');
   useEffect(() => {
     const fetchCities = async () => {
       // Only fetch cities for Undergraduate courses
-      if (formData.courseName && formData.educationLevel === 'Undergraduate') {
+      const eligibleLevels = ['Undergraduate', 'Diploma', 'Certified', 'Integrated'];
+      if (formData.courseName && eligibleLevels.includes(formData.educationLevel)) {
         try {
-          const res = await axios.get(`http://localhost:5000/api/students/cities?stream=${formData.courseName}`);
-          setCities(res.data.data.map(item => item.city));
+         const res = await axios.get(`http://localhost:5000/api/students/cities?stream=${formData.courseName}&university=${formData.university}`);
+
+        setCities(res.data.data);
+
           console.log('Fetched cities:', res.data.data);
         } catch (error) {
           console.error('Error fetching cities:', error);
@@ -100,7 +105,7 @@ const [authSuccess, setAuthSuccess] = useState('');
     };
 
     fetchCities();
-  }, [formData.courseName, formData.educationLevel]);
+  }, [formData.courseName, formData.educationLevel, formData.university]);
 
   // Modified useEffect for colleges - conditional city parameter
   useEffect(() => {
@@ -114,8 +119,7 @@ const [authSuccess, setAuthSuccess] = useState('');
         }
 
         try {
-          let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}`;
-         
+          let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}&university=${formData.university}`;
           // Only add city parameter for Undergraduate
           if (formData.educationLevel === 'Undergraduate' && formData.city) {
             url += `&city=${formData.city}`;
@@ -134,7 +138,7 @@ const [authSuccess, setAuthSuccess] = useState('');
     };
 
     fetchColleges();
-  }, [formData.courseName, formData.specialization, formData.city, formData.educationLevel]);
+  },[formData.courseName, formData.specialization, formData.city, formData.educationLevel, formData.university]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -223,7 +227,7 @@ const [authSuccess, setAuthSuccess] = useState('');
     }
 
     try {
-      let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}`;
+let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}&university=${formData.university}`;
      
       // Only add city parameter for Undergraduate
       if (formData.educationLevel === 'Undergraduate' && formData.city) {
@@ -303,6 +307,32 @@ const handleAuthSubmit = async () => {
   }
 };
 
+const streamOptions = {
+  'Mumbai University': {
+    Undergraduate: [
+      'Fine Arts',
+      'Commerce',
+      'Science',
+      'Arts',
+      'Vocational',
+      'International Accounting',
+      'Management',
+      'Performing Arts',
+      'Sports Management'
+    ],
+    Postgraduate: [
+      'Master of Science',
+      'Master of Arts',
+      'Master of Commerce',
+      'MA Psychology'
+    ],
+    Integrated: ['Integrated Master of Science']
+  },
+  'Pune University': {
+    Undergraduate: ['Science', 'Commerce', 'Arts'],
+    Postgraduate: ['Master of Science', 'Master of Commerce']
+  }
+};
 
 
   return loggedIn ?(
@@ -324,67 +354,95 @@ const handleAuthSubmit = async () => {
           />
         </div>
 
+
+           <select name="university" value={formData.university} onChange={handleInputChange} className="select-dropdown">
+  <option value="">Select University</option>
+  <option value="Mumbai University">Mumbai University</option>
+  <option value="Pune University">Pune University</option>
+  
+</select>
+
+
         <div className="education-level-group">
-          <label className="label">Select Education Level:</label>
-          <div className="education-level-options">
-            <label>
-              <input
-                type="radio"
-                name="educationLevel"
-                value="Undergraduate"
-                checked={formData.educationLevel === 'Undergraduate'}
-                onChange={handleInputChange}
-              />
-              Undergraduate
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="educationLevel"
-                value="Postgraduate"
-                checked={formData.educationLevel === 'Postgraduate'}
-                onChange={handleInputChange}
-              />
-              Postgraduate
-            </label>
-          </div>
-        </div>
-   
-        <div className="course-selection">
-          <label className="label">
-            Select Stream:
-          </label>
-          <select
-            name="courseName"
-            value={formData.courseName}
-            onChange={handleInputChange}
-            className="select-dropdown course-select"
-            disabled={!formData.educationLevel}
-          >
-            <option value="">Select Stream</option>
-            {formData.educationLevel === 'Undergraduate' && (
-              <>
-                <option value="Sports Management">Bachelors in Sports Management</option>
-                <option value="Fine Arts">Bachelors in Fine Arts</option>
-                <option value="Performing Arts">Bachelors in Performing Arts</option>
-                <option value="Management">Bachelors in Management Studies</option>
-                <option value="Science">Bachelors in Science</option>
-                <option value="Commerce">Bachelors in Commerce</option>
-                <option value="Arts">Bachelors in Arts</option>
-                <option value="Vocational">Bachelors in Vocational</option>
-                <option value="International Accounting">Bachelors in International Accounting</option>
-              </>
-            )}
-            {formData.educationLevel === 'Postgraduate' && (
-              <>
-                <option value="Master of Science">Master of Science</option>
-                <option value="Master of Arts">Master of Arts</option>
-                <option value="Master of Commerce">Master of Commerce</option>
-                <option value="MA Psychology">MA Psychology</option>
-              </>
-            )}
-          </select>
-        </div>
+  <label className="label">Select Education Level:</label>
+  <div className="education-level-options">
+    <label>
+      <input
+        type="radio"
+        name="educationLevel"
+        value="Undergraduate"
+        checked={formData.educationLevel === 'Undergraduate'}
+        onChange={handleInputChange}
+      />
+      Undergraduate
+    </label>
+    <label>
+      <input
+        type="radio"
+        name="educationLevel"
+        value="Postgraduate"
+        checked={formData.educationLevel === 'Postgraduate'}
+        onChange={handleInputChange}
+      />
+      Postgraduate
+    </label>
+    <label>
+      <input
+        type="radio"
+        name="educationLevel"
+        value="Diploma"
+        checked={formData.educationLevel === 'Diploma'}
+        onChange={handleInputChange}
+      />
+      Diploma
+    </label>
+    <label>
+      <input
+        type="radio"
+        name="educationLevel"
+        value="Certified"
+        checked={formData.educationLevel === 'Certified'}
+        onChange={handleInputChange}
+      />
+      Certified
+    </label>
+    <label>
+      <input
+        type="radio"
+        name="educationLevel"
+        value="Integrated"
+        checked={formData.educationLevel === 'Integrated'}
+        onChange={handleInputChange}
+      />
+      Integrated
+    </label>
+  </div>
+</div>
+
+   <div className="course-selection">
+  <label className="label">Select Stream:</label>
+  <select
+    name="courseName"
+    value={formData.courseName}
+    onChange={handleInputChange}
+    className="select-dropdown course-select"
+    disabled={!formData.educationLevel || !formData.university}
+  >
+    <option value="">Select Stream</option>
+    {formData.university &&
+      formData.educationLevel &&
+      streamOptions[formData.university]?.[formData.educationLevel]?.map((stream, idx) => (
+        <option key={idx} value={stream}>
+          {formData.educationLevel === 'Integrated'
+            ? stream
+            : formData.educationLevel === 'Postgraduate'
+            ? stream
+            : `Bachelors in ${stream}`}
+        </option>
+      ))}
+  </select>
+</div>
+
 
        {/* Specialization Dropdown */}
 <div className="specialization-group">
@@ -423,7 +481,9 @@ const handleAuthSubmit = async () => {
           </div>
 
           {/* City Selection - Only show for Undergraduate */}
-          {formData.educationLevel === 'Undergraduate' && (
+          
+          {['Undergraduate', 'Diploma', 'Certified', 'Integrated'].includes(formData.educationLevel) && (
+
             <div className="form-row">
               <div className="form-group">
                 <label className="label">
@@ -464,21 +524,25 @@ const handleAuthSubmit = async () => {
             <h2 className="section-title">Available Colleges ({colleges.length} found)</h2>
             <table className="colleges-table">
               <thead>
-                <tr>
-                  {colleges[0]?.college_code && <th>College Code</th>}
-                  <th>College Name</th>
-                  {colleges[0]?.city && <th>City</th>}
-                  <th>Course</th>
-                </tr>
-              </thead>
+  <tr>
+    {colleges[0]?.college_code && <th>College Code</th>}
+    <th>College Name</th>
+    {colleges[0]?.city && <th>City</th>}
+    <th>Course</th>
+    {colleges[0]?.university && <th>University</th>}
+  </tr>
+</thead>
+
               <tbody>
                 {currentColleges.map((college, index) => (
-                  <tr key={index}>
+                <tr key={index}>
   {college.college_code && <td>{college.college_code}</td>}
   <td>{college.institute_name}</td>
   {college.city && <td>{college.city}</td>}
   <td>{college.course}</td>
+  {college.university && <td>{college.university}</td>}
 </tr>
+
 
                 ))}
               </tbody>
@@ -508,6 +572,11 @@ const handleAuthSubmit = async () => {
         )}
 
 
+{showResults && colleges.length === 0 && (
+  <div className="results-section">
+    <h2 className="section-title">No colleges found.</h2>
+  </div>
+)}
 
        
 
