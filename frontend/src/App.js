@@ -326,7 +326,19 @@ const streamOptions = {
       'Master of Commerce',
       'MA Psychology'
     ],
-    Integrated: ['Integrated Master of Science']
+    Integrated: ['Integrated Master of Science'],
+    
+    Diploma:[
+      'Diploma Course',
+      'Advanced Diploma Course'
+    ],
+
+    Certified:[
+      'Certificate Course',
+      'Teacher Training Certificate Course'
+    ],
+    
+
   },
   'Pune University': {
     Undergraduate: ['Science', 'Commerce', 'Arts'],
@@ -429,36 +441,52 @@ const streamOptions = {
     disabled={!formData.educationLevel || !formData.university}
   >
     <option value="">Select Stream</option>
-    {formData.university &&
-      formData.educationLevel &&
-      streamOptions[formData.university]?.[formData.educationLevel]?.map((stream, idx) => (
-        <option key={idx} value={stream}>
-          {formData.educationLevel === 'Integrated'
-            ? stream
-            : formData.educationLevel === 'Postgraduate'
-            ? stream
-            : `Bachelors in ${stream}`}
-        </option>
-      ))}
-  </select>
-</div>
+            {formData.university && formData.educationLevel &&
+              streamOptions[formData.university]?.[formData.educationLevel]?.map((stream, idx) => (
+                <option key={idx} value={stream}>
+                  {(formData.educationLevel === 'Integrated' ||
+                    formData.educationLevel === 'Postgraduate' ||
+                    formData.educationLevel === 'Diploma' ||
+                    formData.educationLevel === 'Certified')
+                    ? stream
+                    : `Bachelors in ${stream}`}
+                </option>
+              ))}
+          </select>
+        </div>
+
 
 
        {/* Specialization Dropdown */}
-<div className="specialization-group">
-  <label className="label">Select Specialization:</label>
-  <select
-    name="specialization"
-    value={formData.specialization}
-    onChange={handleInputChange}
-    className="select-dropdown"
-  >
-    <option value="">Select Specialization</option>
-    {specializations.map((spec, index) => (
+<select
+  name="specialization"
+  value={formData.specialization}
+  onChange={handleInputChange}
+  className="select-dropdown"
+>
+  <option value="">Select Specialization</option>
+  {specializations
+    .filter(spec => {
+      const selected = formData.courseName;
+      if (!selected) return false;
+
+      if (formData.courseName === 'Diploma Course') {
+        return spec.startsWith('Diploma Course');
+      } else if (formData.courseName === 'Advanced Diploma Course') {
+        return spec.startsWith('Advanced Diploma Course');
+      } else if (selected === 'Certificate Course') {
+        return spec.startsWith('Certificate Course');
+      } else if (selected === 'Teacher Training Certificate Course') {
+        return spec.startsWith('Teacher Training Certificate Course');
+      }
+
+      return true;
+    })
+    .map((spec, index) => (
       <option key={index} value={spec}>{spec}</option>
     ))}
-  </select>
-</div>
+</select>
+
 
         {/* Filter Colleges Section */}
         <div className="filter-section">

@@ -38,7 +38,16 @@ const universityToTableMap = {
     'Master of Science': 'pg_cutoffs',
     'Master of Arts': 'pg_cutoffs',
     'Master of Commerce': 'pg_cutoffs',
-    'MA Psychology': 'pg_cutoffs'
+    'MA Psychology': 'pg_cutoffs',
+
+    // diploma streams
+    'Diploma Course': 'DIPLOMA_cutoffs',
+    'Advanced Diploma Course': 'DIPLOMA_cutoffs',
+
+    // Certified streams
+    'Certificate Course' : 'CERTIFIED_cutoffs',
+    'Teacher Training Certificate Course': 'CERTIFIED_cutoffs'
+    
   },
 
   'Pune University': {

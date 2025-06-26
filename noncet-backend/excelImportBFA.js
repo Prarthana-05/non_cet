@@ -6,7 +6,7 @@ require('dotenv').config();
 
 (async function importBAData() {
   try {
-    const filePath = Path.join(process.env.FILE_PATH, "Bachelor of fine arts.xlsx");
+    const filePath = Path.join(process.env.FILE_PATH, "Copy of Bachelor_of_fine_arts(1).xlsx");
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];

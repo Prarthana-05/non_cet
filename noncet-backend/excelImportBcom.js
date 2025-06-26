@@ -6,7 +6,7 @@ require('dotenv').config();
 
 (async function importBcomData() {
   try {
-    const filePath = Path.join(process.env.FILE_PATH, "Bachelor of Commerce.xlsx");
+    const filePath = Path.join(process.env.FILE_PATH, "Bachelor_of_Commerce(1).xlsx");
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
