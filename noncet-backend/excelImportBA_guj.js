@@ -4,31 +4,31 @@ const pool = require('./config/db');
 const Path = require('path');
 require('dotenv').config();
 
-(async function importIntegratedMSCData() {
+(async function importSportsData() {
   try {
-    const filePath = Path.join(process.env.FILE_PATH, "Master of Science(FIVE YEAR MASTER OF SCIENCE INTEGRATED COURSE).xlsx");
+    const filePath = Path.join(process.env.FILE_PATH, "BA (Gujarati).xlsx");
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const rows = xlsx.utils.sheet_to_json(worksheet);
 
     const insertQuery = `
-      INSERT INTO integrated_msc_cutoffs (college_code, institute_name, city, course)
+      INSERT INTO BA_GUJARATI_cutoffs (college_code, institute_name, city, course)
       VALUES (?, ?, ?, ?)
     `;
 
     for (let row of rows) {
       await pool.execute(insertQuery, [
         row["Code"] || null,
-        row["College Name"] || null,
-        row["CityName"] || null,
-        row["Course"] || null
+        row["College"] || null,
+        row["City"] || null,
+        row["Course"] || null,
       ]);
     }
 
-    console.log('Integrated Master of Science data imported successfully!');
+    console.log('GUJ course data imported successfully!');
     await pool.end();
   } catch (err) {
-    console.error('Error importing Integrated MSC data:', err);
+    console.error('Error importing GUJ course data:', err);
   }
 })();

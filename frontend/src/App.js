@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+
 function App() {
   const [formData, setFormData] = useState({
     courseName: '',
@@ -87,7 +88,7 @@ const [authSuccess, setAuthSuccess] = useState('');
   useEffect(() => {
     const fetchCities = async () => {
       // Only fetch cities for Undergraduate courses
-      const eligibleLevels = ['Undergraduate', 'Diploma', 'Certified', 'Integrated'];
+      const eligibleLevels = ['Undergraduate', 'Diploma', 'Certificate', 'Integrated'];
       if (formData.courseName && eligibleLevels.includes(formData.educationLevel)) {
         try {
          const res = await axios.get(`http://localhost:5000/api/students/cities?stream=${formData.courseName}&university=${formData.university}`);
@@ -310,14 +311,18 @@ const handleAuthSubmit = async () => {
 const streamOptions = {
   'Mumbai University': {
     Undergraduate: [
-      'Fine Arts',
-      'Commerce',
-      'Science',
       'Arts',
+      'Science',
+      'Commerce',
+      'Fine Arts',
       'Vocational',
       'International Accounting',
       'Management',
       'Performing Arts',
+      'Tourism and Travel Managment',
+      'Architecture',
+      'Gujarati',
+      'Adv.Dip.in Accounting and Taxation',
       'Sports Management'
     ],
     Postgraduate: [
@@ -333,7 +338,7 @@ const streamOptions = {
       'Advanced Diploma Course'
     ],
 
-    Certified:[
+    Certificate:[
       'Certificate Course',
       'Teacher Training Certificate Course'
     ],
@@ -343,7 +348,31 @@ const streamOptions = {
   'Pune University': {
     Undergraduate: ['Science', 'Commerce', 'Arts'],
     Postgraduate: ['Master of Science', 'Master of Commerce']
-  }
+  },
+'Savitribai Phule Pune University':{},
+'Shivaji University':{},
+'Dr. Babasaheb Ambedkar Marathwada University':{},
+'Rashtrasant Tukadoji Maharaj Nagpur University':{},
+'North Maharashtra University':{},
+'Sant Gadge Baba Amravati University':{},
+'Solapur University':{},
+'Swami Ramanand Teerth Marathwada University':{},
+'Dr. Babasaheb Ambedkar Technological University':{},
+'Yashwantrao Chavan Maharashtra Open University':{},
+'Gondwana University':{},
+'Kavikulaguru Kalidas Sanskrit University':{},
+'Maharashtra University of Health Sciences':{},
+'Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth':{},
+'Vasantrao Naik Marathwada Krishi Vidyapeeth':{},
+'Mahatma Phule Krishi Vidyapeeth':{},
+'Maharashtra National Law University (Mumbai)':{},
+'Maharashtra National Law University (Nagpur)':{},
+'Maharashtra National Law University (Aurangabad)':{},
+'Dr. Homi Bhabha State University':{},
+'COEP Technological University':{},
+'Cluster University of Nagpur':{},
+'Cluster University of Mumbai':{},
+'Cluster University of Pune':{},
 };
 
 
@@ -351,14 +380,21 @@ const streamOptions = {
     <div className="app">
       {/* Header */}
       <div className="header">
-        <h1>VidyarthiMitra Non-Cet College</h1>
+        <div className="logo-title">
+          <img src="/logo.png" alt="Vidyarthi Mitra Logo" className="logo" />
+
+          <h1>🎓 VidyarthiMitra Non-Cet College</h1>
       </div>
+    </div>
+
 
       <div className="container">
         <div className="search-bar">
+          
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="🔍 Search colleges..."
+
             className="text-input"
             name="searchQuery"
             value={formData.searchQuery || ''}
@@ -369,9 +405,32 @@ const streamOptions = {
 
            <select name="university" value={formData.university} onChange={handleInputChange} className="select-dropdown">
   <option value="">Select University</option>
+  
   <option value="Mumbai University">Mumbai University</option>
   <option value="Pune University">Pune University</option>
-  
+  <option value="Savitribai Phule Pune University">Savitribai Phule Pune University</option>
+  <option value="Shivaji University">Shivaji University</option>
+  <option value="Dr. Babasaheb Ambedkar Marathwada University">Dr. Babasaheb Ambedkar Marathwada University</option>
+  <option value="Rashtrasant Tukadoji Maharaj Nagpur University">Rashtrasant Tukadoji Maharaj Nagpur University</option>
+  <option value="Sant Gadge Baba Amravati University">Sant Gadge Baba Amravati University</option>
+  <option value="Solapur University">Solapur University</option>
+  <option value="Swami Ramanand Teerth Marathwada University">Swami Ramanand Teerth Marathwada University</option>
+  <option value="Dr. Babasaheb Ambedkar Technological University">Dr. Babasaheb Ambedkar Technological University</option>
+  <option value="Yashwantrao Chavan Maharashtra Open University">Yashwantrao Chavan Maharashtra Open University</option>
+  <option value="Gondwana University">Gondwana University</option>
+  <option value="Kavikulaguru Kalidas Sanskrit University">Kavikulaguru Kalidas Sanskrit University</option>
+  <option value="Maharashtra University of Health Sciences">Maharashtra University of Health Sciences</option>
+  <option vaule="Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth">Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth</option>
+  <option value="Vasantrao Naik Marathwada Krishi Vidyapeeth">Vasantrao Naik Marathwada Krishi Vidyapeeth</option>
+  <option value="Mahatma Phule Krishi Vidyapeeth">Mahatma Phule Krishi Vidyapeeth</option>
+  <option value="Maharashtra National Law University (Mumbai)">Maharashtra National Law University (Mumbai)</option>
+  <option value="Maharashtra National Law University (Nagpur)">Maharashtra National Law University (Nagpur)</option>
+  <option value="Maharashtra National Law University (Aurangabad)">Maharashtra National Law University (Aurangabad)</option>
+  <option value="Dr. Homi Bhabha State University">Dr. Homi Bhabha State University</option>
+  <option value="COEP Technological University">COEP Technological University</option>
+  <option value="Cluster University of Nagpur">Cluster University of Nagpur</option>
+  <option value="Cluster University of Mumbai">Cluster University of Mumbai</option>
+  <option value="Cluster University of Pune">Cluster University of Pune</option>
 </select>
 
 
@@ -412,11 +471,11 @@ const streamOptions = {
       <input
         type="radio"
         name="educationLevel"
-        value="Certified"
-        checked={formData.educationLevel === 'Certified'}
+        value="Certificate"
+        checked={formData.educationLevel === 'Certificate'}
         onChange={handleInputChange}
       />
-      Certified
+      Certificate
     </label>
     <label>
       <input
@@ -447,7 +506,7 @@ const streamOptions = {
                   {(formData.educationLevel === 'Integrated' ||
                     formData.educationLevel === 'Postgraduate' ||
                     formData.educationLevel === 'Diploma' ||
-                    formData.educationLevel === 'Certified')
+                    formData.educationLevel === 'Certificate')
                     ? stream
                     : `Bachelors in ${stream}`}
                 </option>
@@ -510,7 +569,7 @@ const streamOptions = {
 
           {/* City Selection - Only show for Undergraduate */}
           
-          {['Undergraduate', 'Diploma', 'Certified', 'Integrated'].includes(formData.educationLevel) && (
+          {['Undergraduate', 'Diploma', 'Certificate', 'Integrated'].includes(formData.educationLevel) && (
 
             <div className="form-row">
               <div className="form-group">
@@ -645,6 +704,45 @@ const streamOptions = {
       </div>
     </div>
 ) : (
+  <div className="login-and-aboutus">
+{/* Fancy Welcome Heading */}
+<div
+  style={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: '30px',
+    animation: 'floatGlow 2s ease-out',
+  }}
+>
+  <img
+    src="/logo.png"
+    alt="VidyarthiMitra Logo"
+    style={{
+      width: '500px',
+      height: '100px',
+      marginBottom: '10px',
+      // boxShadow: '0 0 15px rgba(0, 123, 255, 0.4)',
+    }}
+  />
+  <h1
+    style={{
+      fontSize: '2.5rem',
+      color: '#1a237e',
+      textShadow: '0 0 5px white, 0 0 10px white',
+      fontWeight: 'bold',
+      letterSpacing: '1px',
+      margin: 0,
+    }}
+  >
+    🎓 Welcome to <span style={{ color: 'black' }}>VidyarthiMitra</span> 🎓
+  </h1>
+  <p style={{ fontSize: '1.1rem', color: 'black', marginTop: '8px',fontWeight: 'bold' }}>
+    Your guide to Non-CET college admissions
+  </p>
+</div>
+
+  {/* Login Box */}
   <div className="login-container">
     <h2>{authMode === 'login' ? 'Login' : 'Register'}</h2>
 
@@ -693,6 +791,71 @@ const streamOptions = {
     {authError && <p style={{ color: 'red' }}>{authError}</p>}
     {authSuccess && <p style={{ color: 'green' }}>{authSuccess}</p>}
   </div>
+
+  {/* About Us Section */}
+  <div className="about-us-section" style={{ marginTop: '0px', padding: '20px' }}>
+    <h1 style={{ textAlign: 'center', marginBottom: '10px', color: 'black',textShadow: '0 0 5px white, 0 0 10px black' }}>About Us:</h1>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '20px',
+      }}
+    >
+      <div
+        style={{
+          background: '#fff',
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        }}
+      >
+        <h3>🎓 What is VidyarthiMitra?</h3>
+        <p>VidyarthiMitra is an education support platform that guides students with career and college admission information.</p>
+      </div>
+
+      <div
+        style={{
+          background: '#fff',
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        }}
+      >
+        <h3>📚 Website Purpose</h3>
+        <p>This portal helps students explore Non-CET colleges, search by stream, and find specializations with accurate cutoffs.</p>
+      </div>
+
+      <div
+        style={{
+          background: '#fff',
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        }}
+      >
+        <h3>🔍 Smart Filters</h3>
+        <p>Find colleges by university, stream, city, and more fast and intuitively. Results are clear, with filters that really help.</p>
+      </div>
+
+      <div
+        style={{
+          background: '#fff',
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        }}
+      >
+        <h3>🤖 Chatbot Assistant</h3>
+        <p>Need help? Use the built-in chatbot to answer common questions, assist in finding colleges, or get guidance instantly.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
 );
 
 }

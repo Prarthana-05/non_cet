@@ -24,15 +24,19 @@ router.get('/check-db', async (req, res) => {
 
 const universityToTableMap = {
   'Mumbai University': {
-    'Fine Arts': 'bfa_cutoffs',
-    'Commerce': 'bcom_cutoffs',
     'Science': 'bsc_cutoffs',
     'Arts': 'ba_cutoffs',
+    'Commerce': 'bcom_cutoffs',
+    'Fine Arts': 'bfa_cutoffs',
     'Vocational': 'bvoc_cutoffs',
     'International Accounting': 'bia_cutoffs',
     'Management': 'bm_cutoffs',
     'Performing Arts': 'bpa_cutoffs',
+    'Architecture': 'barch_cutoffs',
+    'Gujarati':  'ba_gujarati_cutoffs',
+    'Adv.Dip.in Accounting and Taxation': 'adv_dip_cutoffs',
     'Sports Management': 'bsports_cutoffs',
+    ' Tourism and Travel Managment': 'travel_cutoffs',    
     'Integrated Master of Science': 'integrated_msc_cutoffs',
     // PG streams
     'Master of Science': 'pg_cutoffs',
@@ -53,7 +57,31 @@ const universityToTableMap = {
   'Pune University': {
     'Science': 'pune_bsc_cutoffs',
     
-  }
+  },
+'Savitribai Phule Pune University':{},
+'Shivaji University':{},
+'Dr. Babasaheb Ambedkar Marathwada University':{},
+'Rashtrasant Tukadoji Maharaj Nagpur University':{},
+'North Maharashtra University':{},
+'Sant Gadge Baba Amravati University':{},
+'Solapur University':{},
+'Swami Ramanand Teerth Marathwada University':{},
+'Dr. Babasaheb Ambedkar Technological University':{},
+'Yashwantrao Chavan Maharashtra Open University':{},
+'Gondwana University':{},
+'Kavikulaguru Kalidas Sanskrit University':{},
+'Maharashtra University of Health Sciences':{},
+'Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth':{},
+'Vasantrao Naik Marathwada Krishi Vidyapeeth':{},
+'Mahatma Phule Krishi Vidyapeeth':{},
+'Maharashtra National Law University (Mumbai)':{},
+'Maharashtra National Law University (Nagpur)':{},
+'Maharashtra National Law University (Aurangabad)':{},
+'Dr. Homi Bhabha State University':{},
+'COEP Technological University':{},
+'Cluster University of Nagpur':{},
+'Cluster University of Mumbai':{},
+'Cluster University of Pune':{},
 };
 
 // Check if stream is postgraduate
