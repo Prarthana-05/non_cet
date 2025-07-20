@@ -22,6 +22,9 @@ router.get('/check-db', async (req, res) => {
   }
 });
 
+// Replace your existing universityToTableMap with this fixed version
+// Replace your existing universityToTableMap with this fixed version
+
 const universityToTableMap = {
   'Mumbai University': {
     'Fine Arts': 'bfa_cutoffs',
@@ -33,7 +36,19 @@ const universityToTableMap = {
     'Management': 'bm_cutoffs',
     'Performing Arts': 'bpa_cutoffs',
     'Sports Management': 'bsports_cutoffs',
+    'Architecture': 'barch_cutoffs',
+    'Gujarati': 'ba_gujarati_cutoffs',
+    'Tourism and Travel Managment': 'travel_cutoffs',  
+    'Adv.Dip.in Accounting and Taxation': 'adv_dip_cutoffs',
+    //integrated
     'Integrated Master of Science': 'integrated_msc_cutoffs',
+    //diploma
+    'Diploma Cousre':'dip_cutoffs',
+    'Advanced Diploma Course':'dip_cutoffs',
+
+    //certificate
+    'Certificate Course': 'CERTIFIED_cutoffs',
+    'Teacher Training Certificate Course': 'CERTIFIED_cutoffs',
     // PG streams
     'Master of Science': 'pg_cutoffs',
     'Master of Arts': 'pg_cutoffs',
@@ -43,15 +58,19 @@ const universityToTableMap = {
 
   'Pune University': {
     'Science': 'pune_bsc_cutoffs',
-    
   }
 };
-
 // Check if stream is postgraduate
 const isPostgraduate = (stream) => {
   return ['Master of Science', 'Master of Arts', 'Master of Commerce', 'MA Psychology'].includes(stream);
 };
 
+
+// Replace your existing specializations route with this fixed version
+
+// Replace your specializations route with this version that has better debugging
+
+// Replace your specializations route with this corrected version
 
 router.get('/specializations', async (req, res) => {
   const { stream, university } = req.query;
@@ -72,22 +91,57 @@ router.get('/specializations', async (req, res) => {
 
   try {
     let query;
+    let params = [];
+    
     if (tableName.includes('pg')) {
+      // For PG streams, match specific prefix
       query = `SELECT DISTINCT course FROM ${tableName} WHERE course LIKE ?`;
-      const [rows] = await pool.query(query, [`${stream}%`]);
-      res.json({ success: true, data: rows });
+      params = [`${stream}%`];
+    } else if (tableName.trim() === 'dip_cutoffs') {
+      // NEW: Filter for diploma courses based on stream selection
+      if (stream === 'Diploma Cousre') {
+        query = `SELECT DISTINCT course FROM ${tableName} WHERE course LIKE '%Diploma%' AND course NOT LIKE '%Advanced%'`;
+        params = [];
+      } else if (stream === 'Advanced Diploma Course') {
+        query = `SELECT DISTINCT course FROM ${tableName} WHERE course LIKE '%Advanced%' AND course LIKE '%Diploma%'`;
+        params = [];
+      } else {
+        // Fallback - show all courses from diploma table
+        query = `SELECT DISTINCT course FROM ${tableName}`;
+        params = [];
+      }
+    } else if (tableName.trim() === 'CERTIFIED_cutoffs') {
+      // Filter courses that contain the stream type
+      if (stream === 'Certificate Course') {
+        query = `SELECT DISTINCT course FROM ${tableName} WHERE course LIKE '%Certificate%' AND course NOT LIKE '%Teacher%'`;
+        params = [];
+      } else if (stream === 'Teacher Training Certificate Course') {
+        query = `SELECT DISTINCT course FROM ${tableName} WHERE course LIKE '%Teacher%' AND course LIKE '%Certificate%'`;
+        params = [];
+      } else {
+        // Fallback - show all courses from CERTIFIED table
+        query = `SELECT DISTINCT course FROM ${tableName}`;
+        params = [];
+      }
     } else {
+      // Normal UG tables
       query = `SELECT DISTINCT course FROM ${tableName}`;
-      const [rows] = await pool.query(query);
-      res.json({ success: true, data: rows });
+      params = [];
     }
+
+    console.log('Executing query:', query);
+    console.log('With params:', params);
+
+    const [rows] = await pool.query(query, params);
+    console.log('Found rows:', rows.length);
+    
+    res.json({ success: true, data: rows });
+
   } catch (error) {
     console.error('Error in specializations route:', error);
     res.status(500).json({ success: false, message: 'Error fetching specializations', error: error.message });
   }
 });
-
-
 // Route to get cleaned, unique cities (only for UG streams)
 router.get('/cities', async (req, res) => {
   const { stream, university } = req.query;
