@@ -31,7 +31,7 @@ const handleChatSend = async () => {
   setChatMessages(prev => [...prev, userMessage]);
 
   try {
-    const res = await axios.post('http://localhost:5000/api/students/chatbot', {
+    const res = await axios.post('https://non-cet.onrender.com/api/students/chatbot', {
       message: chatInput
     });
 
@@ -64,7 +64,7 @@ const [authSuccess, setAuthSuccess] = useState('');
     const fetchSpecializations = async () => {
       if (formData.courseName) {
         try {
-          const res = await axios.get(`http://localhost:5000/api/students/specializations?stream=${formData.courseName}&university=${formData.university}`);
+          const res = await axios.get(`https://non-cet.onrender.com/api/students/specializations?stream=${formData.courseName}&university=${formData.university}`);
 
           setSpecializations(res.data.data.map(item => item.course));
           console.log('Selected Stream:', formData.courseName);
@@ -94,7 +94,7 @@ const [authSuccess, setAuthSuccess] = useState('');
       const eligibleLevels = ['Undergraduate', 'Diploma', 'Certified', 'Integrated'];
       if (formData.courseName && eligibleLevels.includes(formData.educationLevel)) {
         try {
-         const res = await axios.get(`http://localhost:5000/api/students/cities?stream=${formData.courseName}&university=${formData.university}`);
+         const res = await axios.get(`https://non-cet.onrender.com/api/students/cities?stream=${formData.courseName}&university=${formData.university}`);
 
         setCities(res.data.data);
 
@@ -123,7 +123,7 @@ const [authSuccess, setAuthSuccess] = useState('');
         }
 
         try {
-          let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}&university=${formData.university}`;
+          let url = `https://non-cet.onrender.com/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}&university=${formData.university}`;
           // Only add city parameter for Undergraduate
           if (formData.educationLevel === 'Undergraduate' && formData.city) {
             url += `&city=${formData.city}`;
@@ -203,7 +203,7 @@ const [authSuccess, setAuthSuccess] = useState('');
 
   const fetchCollegeBySearch = async (query) => {
   try {
-    const res = await axios.get(`http://localhost:5000/api/students/search-college?q=${query}`);
+    const res = await axios.get(`https://non-cet.onrender.com/api/students/search-college?q=${query}`);
     setColleges(res.data.data);
     setShowResults(true);
     setCurrentPage(1);
@@ -231,7 +231,7 @@ const [authSuccess, setAuthSuccess] = useState('');
     }
 
     try {
-let url = `http://localhost:5000/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}&university=${formData.university}`;
+let url = `https://non-cet.onrender.com/api/students/colleges?stream=${formData.courseName}&specialization=${formData.specialization}&university=${formData.university}`;
      
       // Only add city parameter for Undergraduate
       if (formData.educationLevel === 'Undergraduate' && formData.city) {
@@ -278,8 +278,8 @@ const handleAuthChange = (e) => {
 const handleAuthSubmit = async () => {
   try {
     const url = authMode === 'login'
-      ? 'http://localhost:5000/api/students/login'
-      : 'http://localhost:5000/api/students/register';
+      ? 'https://non-cet.onrender.com/api/students/login'
+      : 'https://non-cet.onrender.com/api/students/register';
 
     const payload = authMode === 'login'
       ? { email: authData.email, password: authData.password }
