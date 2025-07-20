@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import Footer from './Footer';
+import AboutUs from './AboutUs';
+
+
 
 function App() {
   const [formData, setFormData] = useState({
@@ -310,14 +314,20 @@ const handleAuthSubmit = async () => {
 const streamOptions = {
   'Mumbai University': {
     Undergraduate: [
-      'Fine Arts',
-      'Commerce',
-      'Science',
+      
+      
       'Arts',
+      'Science',
+      'Commerce',
+      'Fine Arts',
       'Vocational',
       'International Accounting',
       'Management',
       'Performing Arts',
+      'Tourism and Travel Managment',
+      'Architecture',
+      'Gujarati',
+       'Adv.Dip.in Accounting and Taxation',
       'Sports Management'
     ],
     Postgraduate: [
@@ -326,7 +336,13 @@ const streamOptions = {
       'Master of Commerce',
       'MA Psychology'
     ],
-    Integrated: ['Integrated Master of Science']
+    Diploma:['Diploma Cousre','Advanced Diploma Course'],
+
+    Integrated: ['Integrated Master of Science'],
+    Certified:[
+      'Certificate Course',
+      'Teacher Training Certificate Course'
+    ]
   },
   'Pune University': {
     Undergraduate: ['Science', 'Commerce', 'Arts'],
@@ -339,6 +355,7 @@ const streamOptions = {
     <div className="app">
       {/* Header */}
       <div className="header">
+        <img src="/vidyalogo.png" alt="Vidyarthi Mitra Logo" className="header-logo" />
         <h1>VidyarthiMitra Non-Cet College</h1>
       </div>
 
@@ -359,11 +376,27 @@ const streamOptions = {
   <option value="">Select University</option>
   <option value="Mumbai University">Mumbai University</option>
   <option value="Pune University">Pune University</option>
-  
+  <option value="Shivaji University">Shivaji University</option>
+  <option value="Nagpur University (RTMNU)">Nagpur University (RTMNU)</option>
+  <option value="Dr. Babasaheb Ambedkar Marathwada University">Dr. Babasaheb Ambedkar Marathwada University</option>
+  <option value="North Maharashtra University">North Maharashtra University</option>
+  <option value="Sant Gadge Baba Amravati University">Sant Gadge Baba Amravati University</option>
+  <option value="Solapur University">Solapur University</option>
+  <option value="Gondwana University">Gondwana University</option>
+  <option value="Punyashlok Ahilyadevi Holkar Solapur University">Punyashlok Ahilyadevi Holkar Solapur University</option>
+  <option value="Kavayitri Bahinabai Chaudhari North Maharashtra University">Kavayitri Bahinabai Chaudhari North Maharashtra University</option>
+  <option value="Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth">Dr. Balasaheb Sawant Konkan Krishi Vidyapeeth</option>
+  <option value="Mahatma Phule Krishi Vidyapeeth">Mahatma Phule Krishi Vidyapeeth</option>
+  <option value="Vasantrao Naik Marathwada Krishi Vidyapeeth">Vasantrao Naik Marathwada Krishi Vidyapeeth</option>
+  <option value="Maharashtra Animal and Fishery Sciences University">Maharashtra Animal and Fishery Sciences University</option>
+  <option value="SNDT Women's University">SNDT Women's University</option>
+  <option value="Yashwantrao Chavan Maharashtra Open University">Yashwantrao Chavan Maharashtra Open University</option>
+  <option value="Institute of Chemical Technology (ICT)">Institute of Chemical Technology (ICT)</option>
+  <option value="Homi Bhabha National Institute">Homi Bhabha National Institute</option>
 </select>
 
 
-        <div className="education-level-group">
+       <div className="education-level-group">
   <label className="label">Select Education Level:</label>
   <div className="education-level-options">
     <label>
@@ -373,6 +406,7 @@ const streamOptions = {
         value="Undergraduate"
         checked={formData.educationLevel === 'Undergraduate'}
         onChange={handleInputChange}
+        disabled={!formData.university}  
       />
       Undergraduate
     </label>
@@ -383,6 +417,7 @@ const streamOptions = {
         value="Postgraduate"
         checked={formData.educationLevel === 'Postgraduate'}
         onChange={handleInputChange}
+        disabled={!formData.university}
       />
       Postgraduate
     </label>
@@ -393,6 +428,7 @@ const streamOptions = {
         value="Diploma"
         checked={formData.educationLevel === 'Diploma'}
         onChange={handleInputChange}
+        disabled={!formData.university}
       />
       Diploma
     </label>
@@ -403,8 +439,9 @@ const streamOptions = {
         value="Certified"
         checked={formData.educationLevel === 'Certified'}
         onChange={handleInputChange}
+        disabled={!formData.university}
       />
-      Certified
+      Certificate
     </label>
     <label>
       <input
@@ -413,34 +450,35 @@ const streamOptions = {
         value="Integrated"
         checked={formData.educationLevel === 'Integrated'}
         onChange={handleInputChange}
+        disabled={!formData.university}
       />
       Integrated
     </label>
   </div>
 </div>
 
+
    <div className="course-selection">
   <label className="label">Select Stream:</label>
   <select
-    name="courseName"
-    value={formData.courseName}
-    onChange={handleInputChange}
-    className="select-dropdown course-select"
-    disabled={!formData.educationLevel || !formData.university}
-  >
-    <option value="">Select Stream</option>
-    {formData.university &&
-      formData.educationLevel &&
-      streamOptions[formData.university]?.[formData.educationLevel]?.map((stream, idx) => (
-        <option key={idx} value={stream}>
-          {formData.educationLevel === 'Integrated'
-            ? stream
-            : formData.educationLevel === 'Postgraduate'
-            ? stream
-            : `Bachelors in ${stream}`}
-        </option>
-      ))}
-  </select>
+  name="courseName"
+  value={formData.courseName}
+  onChange={handleInputChange}
+  className="select-dropdown course-select"
+  disabled={!formData.educationLevel || !formData.university}
+>
+  <option value="">Select Stream</option>
+  {formData.university &&
+    formData.educationLevel &&
+    streamOptions[formData.university]?.[formData.educationLevel]?.map((stream, idx) => (
+      <option key={idx} value={stream}>
+        {['Postgraduate', 'Integrated', 'Certified', 'Diploma'].includes(formData.educationLevel)
+          ? stream
+          : `Bachelors in ${stream}`}
+      </option>
+    ))}
+</select>
+
 </div>
 
 
@@ -578,45 +616,50 @@ const streamOptions = {
   </div>
 )}
 
-       
+      </div>
 
 
-        {/* Chatbot Button and Box */}
-<button className="chat-toggle-btn" onClick={() => setShowChat(prev => !prev)}>
-  {showChat ? 'Close Chat' : 'Chatbot'}
-</button>
+      {/* ✅ Chatbot placed outside the scrollable content */}
+  <button className="chat-toggle-btn" onClick={() => setShowChat(prev => !prev)}>
+    {showChat ? 'Close Chat' : 'Chatbot'}
+  </button>
 
-{showChat && (
-  <div className="chatbot-container">
-    <div className="chatbot-header">
-      Chatbot
-      <button className="chatbot-close-btn" onClick={() => setShowChat(false)}>×</button>
-    </div>
-    <div className="chatbot-messages">
-      {chatMessages.map((msg, idx) => (
-        <div
-          key={idx}
-          className={msg.from === 'bot' ? 'chatbot-message-bot' : 'chatbot-message-user'}
-        >
-          {msg.text}
-        </div>
-      ))}
-    </div>
-    <div className="chatbot-input">
-      <input
-        type="text"
-        value={chatInput}
-        onChange={(e) => setChatInput(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button onClick={handleChatSend}>Send</button>
-    </div>
-  </div>
-)}
-
+  {showChat && (
+    <div className="chatbot-container">
+      <div className="chatbot-header">
+        Chatbot
+        <button className="chatbot-close-btn" onClick={() => setShowChat(false)}>×</button>
+      </div>
+      <div className="chatbot-messages">
+        {chatMessages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={msg.from === 'bot' ? 'chatbot-message-bot' : 'chatbot-message-user'}
+          >
+            {msg.text}
+          </div>
+        ))}
+      </div>
+      <div className="chatbot-input">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) => setChatInput(e.target.value)}
+          placeholder="Type your message..."
+        />
+        <button onClick={handleChatSend}>Send</button>
       </div>
     </div>
+  )}
+
+  <Footer /> 
+  </div>
+
+  
+
 ) : (
+  <div>
+     <h1 className="login-page-title">Welcome to VidyarthiMitra Portal</h1>
   <div className="login-container">
     <h2>{authMode === 'login' ? 'Login' : 'Register'}</h2>
 
@@ -664,9 +707,15 @@ const streamOptions = {
 
     {authError && <p style={{ color: 'red' }}>{authError}</p>}
     {authSuccess && <p style={{ color: 'green' }}>{authSuccess}</p>}
+   
   </div>
+ <AboutUs />
+    
+</div>
+
 );
 
 }
+
 
 export default App;
