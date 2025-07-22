@@ -5,11 +5,26 @@ require('dotenv').config();
 const studentRoutes = require('./routes/studentRoutes');
 
 const app = express();
-// ✅ CORS middleware with frontend URL
+const allowedOrigins = [
+  'https://prarthanaa-portfolio.netlify.app',  // your portfolio
+];
+
+// Dynamic CORS check
 app.use(cors({
-  origin: 'https://non-ey37no9yp-prarthana-05s-projects.vercel.app',
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);  // allow Postman/mobile apps
+    if (
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/non-.*-prarthana-05s-projects\.vercel\.app$/.test(origin)
+    ) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
 
 app.use(express.json());
 
