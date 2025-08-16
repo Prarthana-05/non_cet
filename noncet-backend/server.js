@@ -6,6 +6,7 @@ const studentRoutes = require('./routes/studentRoutes');
 
 const app = express();
 const allowedOrigins = [
+  'https://non-cet.vercel.app',
   'https://prarthanaa-portfolio.netlify.app',  // your portfolio
 ];
 
