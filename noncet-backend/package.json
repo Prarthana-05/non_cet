@@ -17,6 +17,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.14.1",
+    "path-to-regexp": "^6.2.0",
     "xlsx": "^0.18.5"
   },
   "description": ""
