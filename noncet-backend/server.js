@@ -6,7 +6,7 @@ const studentRoutes = require('./routes/studentRoutes');
 
 const app = express();
 const allowedOrigins = [
-   'https://non-cet.vercel.app/',
+   'https://non-cet.vercel.app',
   'https://prarthanaa-portfolio.netlify.app',  // your portfolio
 ];
 
@@ -26,7 +26,8 @@ app.use(cors({
   credentials: true
 }));
 
-
+// Handle preflight requests
+app.options('*', cors());
 app.use(express.json());
 
 app.use('/api/students', studentRoutes);
